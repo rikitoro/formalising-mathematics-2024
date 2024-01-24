@@ -113,15 +113,12 @@ example (h : P → Q) (hP : P) : Q :=
 
 ## Examples for you to try
 
-Delete the `sorry`s and replace them with comma-separated tactic proofs
-using `intro`, `exact` and `apply`.
-
 -/
+
 /-- Every proposition implies itself. -/
 example : P → P := by
-  intro hP
-  exact hP
-  done
+  intro banana
+  exact banana
 
 /-
 
@@ -139,33 +136,36 @@ So the next level is asking you prove that `P → (Q → P)`.
 
 -/
 example : P → Q → P := by
-  intro hP _
-  exact hP
-  done
+  intro hP
+  intro hQ
+  -- the `assumption` tactic will close a goal if
+  -- it's exactly equal to one of the hypotheses.
+  assumption
 
 /-- If we know `P`, and we also know `P → Q`, we can deduce `Q`.
 This is called "Modus Ponens" by logicians. -/
 example : P → (P → Q) → Q := by
   intro hP hPQ
-  apply hPQ hP
-  done
+  apply hPQ at hP
+  exact hP
 
 /-- `→` is transitive. That is, if `P → Q` and `Q → R` are true, then
   so is `P → R`. -/
 example : (P → Q) → (Q → R) → P → R := by
   intro hPQ hQR hP
-  apply hQR
-  apply hPQ hP
-  done
+  apply hPQ at hP
+  apply hQR at hP
+  exact hP
 
 -- If `h : P → Q → R` with goal `⊢ R` and you `apply h`, you'll get
 -- two goals! Note that tactics operate on only the first goal.
-example : (P → Q → R) → (P → Q) → P → R := by
+example : (P → Q → R) → (P → Q) → P → R :=
+  by
   intro hPQR hPQ hP
   apply hPQR
-  . exact hP
-  . apply hPQ hP
-  done
+  · exact hP
+  · apply hPQ
+    exact hP
 
 /-
 
@@ -178,28 +178,58 @@ in this section, where you'll learn some more tactics.
 -/
 variable (S T : Prop)
 
-example : (P → R) → (S → Q) → (R → T) → (Q → R) → S → T := by
-  sorry
-  done
+example : (P → R) → (S → Q) → (R → T) → (Q → R) → S → T :=
+  by
+  intro hPR hSQ hRT hQR hS
+  apply hRT
+  clear hPR
+  apply hQR
+  apply hSQ
+  exact hS
 
 example : (P → Q) → ((P → Q) → P) → Q := by
-  sorry
-  done
+  intro hPQ hPQP
+  apply hPQ
+  apply hPQP
+  exact hPQ
 
-example : ((P → Q) → R) → ((Q → R) → P) → ((R → P) → Q) → P := by
-  sorry
-  done
+example : ((P → Q) → R) → ((Q → R) → P) → ((R → P) → Q) → P :=
+  by
+  intro h1 h2 h3
+  apply h2
+  intro hQ
+  apply h1
+  intro hP
+  exact hQ
 
-example : ((Q → P) → P) → (Q → R) → (R → P) → P := by
-  sorry
-  done
+example : ((Q → P) → P) → (Q → R) → (R → P) → P :=
+  by
+  intro h1 h2 h3
+  apply h1
+  intro hQ
+  apply h3
+  apply h2
+  exact hQ
 
 example : (((P → Q) → Q) → Q) → P → Q := by
-  sorry
-  done
+  intro h1 hP
+  apply h1
+  intro hPQ
+  exact hPQ hP
 
 example :
     (((P → Q → Q) → (P → Q) → Q) → R) →
-      ((((P → P) → Q) → P → P → Q) → R) → (((P → P → Q) → (P → P) → Q) → R) → R := by
-  sorry
-  done
+      ((((P → P) → Q) → P → P → Q) → R) → (((P → P → Q) → (P → P) → Q) → R) → R :=
+  by
+  intro h1 h2 h3
+  apply h2
+  intro h1 hP h2
+  apply h1
+  intro hP
+  exact h2
+
+-- another approach
+example :
+    (((P → Q → Q) → (P → Q) → Q) → R) →
+      ((((P → P) → Q) → P → P → Q) → R) → (((P → P → Q) → (P → P) → Q) → R) → R :=
+  by tauto

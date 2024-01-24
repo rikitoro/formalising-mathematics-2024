@@ -119,8 +119,7 @@ using `intro`, `exact` and `apply`.
 -/
 /-- Every proposition implies itself. -/
 example : P → P := by
-  intro hP
-  exact hP
+  sorry
   done
 
 /-
@@ -139,32 +138,25 @@ So the next level is asking you prove that `P → (Q → P)`.
 
 -/
 example : P → Q → P := by
-  intro hP _
-  exact hP
+  sorry
   done
 
 /-- If we know `P`, and we also know `P → Q`, we can deduce `Q`.
 This is called "Modus Ponens" by logicians. -/
 example : P → (P → Q) → Q := by
-  intro hP hPQ
-  apply hPQ hP
+  sorry
   done
 
 /-- `→` is transitive. That is, if `P → Q` and `Q → R` are true, then
   so is `P → R`. -/
 example : (P → Q) → (Q → R) → P → R := by
-  intro hPQ hQR hP
-  apply hQR
-  apply hPQ hP
+  sorry
   done
 
 -- If `h : P → Q → R` with goal `⊢ R` and you `apply h`, you'll get
 -- two goals! Note that tactics operate on only the first goal.
 example : (P → Q → R) → (P → Q) → P → R := by
-  intro hPQR hPQ hP
-  apply hPQR
-  . exact hP
-  . apply hPQ hP
+  sorry
   done
 
 /-
