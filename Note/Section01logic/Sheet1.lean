@@ -63,14 +63,14 @@ variable (P Q R : Prop)
 
 -- Here are some examples of `intro`, `exact` and `apply` being used.
 -- Assume that `P` and `Q` and `R` are all true. Deduce that `P` is true.
-example (hP : P) (hQ : Q) (hR : R) : P := by
+example (hP : P) (_ : Q) (_ : R) : P := by
   -- note that `exact P` does *not* work. `P` is the proposition, `hP` is the proof.
   exact hP
   done
 
 -- Same example: assume that `P` and `Q` and `R` are true, but this time
 -- give the assumptions silly names. Deduce that `P` is true.
-example (fish : P) (giraffe : Q) (dodecahedron : R) : P := by
+example (fish : P) (_ : Q) (_ : R) : P := by
 -- `fish` is the name of the assumption that `P` is true (but `hP` is a better name)
   exact fish
   done
@@ -78,7 +78,7 @@ example (fish : P) (giraffe : Q) (dodecahedron : R) : P := by
 -- Assume `Q` is true. Prove that `P → Q`.
 example (hQ : Q) : P → Q := by
   -- The goal is of the form `X → Y` so we can use `intro`
-  intro h
+  intro _
   -- now `h` is the hypothesis that `P` is true.
   -- Our goal is now the same as a hypothesis so we can use `exact`
   exact hQ
@@ -139,7 +139,7 @@ So the next level is asking you prove that `P → (Q → P)`.
 
 -/
 example : P → Q → P := by
-  intro hP hQ
+  intro hP _
   apply hP
   done
 
@@ -178,7 +178,7 @@ in this section, where you'll learn some more tactics.
 variable (S T : Prop)
 
 example : (P → R) → (S → Q) → (R → T) → (Q → R) → S → T := by
-  intro hPR hSQ hRT hQR hS
+  intro _ hSQ hRT hQR hS
   apply hRT
   apply hQR
   apply hSQ
@@ -192,11 +192,11 @@ example : (P → Q) → ((P → Q) → P) → Q := by
   done
 
 example : ((P → Q) → R) → ((Q → R) → P) → ((R → P) → Q) → P := by
-  intro hPQR hQRP hRPQ
+  intro hPQR hQRP _
   apply hQRP
   intro hQ
   apply hPQR
-  intro hP
+  intro _
   apply hQ
   done
 
@@ -219,9 +219,9 @@ example : (((P → Q) → Q) → Q) → P → Q := by
 example :
     (((P → Q → Q) → (P → Q) → Q) → R) →
       ((((P → P) → Q) → P → P → Q) → R) → (((P → P → Q) → (P → P) → Q) → R) → R := by
-  intro h1 h2 h3
+  intro _ h2 _
   apply h2
-  intro h4 hP hP'
+  intro h4 _ _
   apply h4
   intro hP''
   apply hP''
