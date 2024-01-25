@@ -25,41 +25,96 @@ and also the following two new tactics:
 variable (P Q R S : Prop)
 
 example : P ↔ P := by
-  sorry
+  rfl
   done
 
 example : (P ↔ Q) → (Q ↔ P) := by
-  sorry
+  intro h
+  rw [h]
   done
 
 example : (P ↔ Q) ↔ (Q ↔ P) := by
-  sorry
+  constructor
+  repeat
+    intro h
+    rw [h]
   done
 
 example : (P ↔ Q) → (Q ↔ R) → (P ↔ R) := by
-  sorry
+  intro hpq hqr
+  rw [hpq, hqr]
   done
 
 example : P ∧ Q ↔ Q ∧ P := by
-  sorry
+  constructor
+  repeat
+    intro h
+    constructor
+    . apply h.right
+    . apply h.left
   done
 
 example : (P ∧ Q) ∧ R ↔ P ∧ Q ∧ R := by
-  sorry
+  constructor
+  . intro h
+    constructor
+    . apply h.left.left
+    . constructor
+      . apply h.left.right
+      . apply h.right
+  . intro h
+    constructor
+    . constructor
+      . apply h.left
+      . apply h.right.left
+    . apply h.right.right
   done
 
 example : P ↔ P ∧ True := by
-  sorry
+  constructor
+  . intro h
+    constructor
+    . apply h
+    . triv
+  . intro h
+    apply h.left
   done
 
 example : False ↔ P ∧ False := by
-  sorry
+  apply Iff.intro
+  . intro hf
+    exfalso
+    apply hf
+  . intro h
+    apply h.right
   done
 
 example : (P ↔ Q) → (R ↔ S) → (P ∧ R ↔ Q ∧ S) := by
-  sorry
+  intro hpq hrs
+  apply Iff.intro
+  . intro hpr
+    apply And.intro
+    . rw [← hpq]
+      apply hpr.left
+    . rw [← hrs]
+      apply hpr.right
+  . intro hqs
+    cases' hqs with hq hs
+    apply And.intro
+    . rw [hpq]
+      apply hq
+    . rw [hrs]
+      apply hs
   done
 
 example : ¬(P ↔ ¬P) := by
-  sorry
+  intro h
+  cases' h with h1 h2
+  by_cases h : P
+  . apply h1
+    . apply h
+    . apply h
+  . apply h
+    apply h2
+    apply h
   done
