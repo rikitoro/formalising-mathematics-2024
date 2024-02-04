@@ -79,17 +79,17 @@ theorem tendsTo_thirtyseven : TendsTo (fun n ↦ 37) 37 :=
   rw [tendsTo_def]
   intro ε hε
   use 100
-  intro n hn
+  intro n _
   norm_num
   exact hε
 
 /-- The limit of the constant sequence with value `c` is `c`. -/
-theorem tendsTo_const (c : ℝ) : TendsTo (fun n ↦ c) c :=
+theorem tendsTo_const (c : ℝ) : TendsTo (fun _ ↦ c) c :=
   by
   intro ε hε
   dsimp only
   use 37
-  intro n hn
+  intro n _
   ring_nf
   norm_num
   exact hε
@@ -104,12 +104,35 @@ theorem tendsTo_add_const {a : ℕ → ℝ} {t : ℝ} (c : ℝ) (h : TendsTo a t
   -- a `forall` hypothesis to specific values.
   -- Look up the explanations of these tactics in Part C
   -- of the course notes.  rw [tendsTo_def] at h ⊢
-  sorry
+  intro ε hε
+  dsimp only
+  specialize h ε hε
+  cases' h with B hB
+  use B
+  intro n
+  intro hn
+  specialize hB n hn
+  simp
+  apply hB
+  done
 
 -- you're not quite ready for this one yet though.
 /-- If `a(n)` tends to `t` then `-a(n)` tends to `-t`.  -/
 example {a : ℕ → ℝ} {t : ℝ} (ha : TendsTo a t) : TendsTo (fun n => -a n) (-t) := by
-  sorry
+  intro ε hε
+  dsimp only
+  specialize ha ε hε
+  cases' ha with B hB
+  use B
+  intro n
+  specialize hB n
+  intro hnn
+  rw [abs_sub_comm]
+  ring_nf
+  rw [add_comm]
+  rw [← sub_eq_add_neg]
+  apply hB hnn
+  done
 -- Try this one. You don't know enough material to do it yet!
 -- Where do you get stuck? The problem is that I didn't teach you
 -- any "API" for (a.k.a. theorems about) the absolute value function |.|.
